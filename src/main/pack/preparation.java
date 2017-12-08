@@ -31,6 +31,8 @@ public class preparation {
         return modFile;
     }
 
+
+
     public static LinkedList<String> rmTrash(String fileName){
         LinkedList<String> modFile = prepareFile(fileName);
         int i=0;
