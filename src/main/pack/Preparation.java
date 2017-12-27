@@ -8,9 +8,9 @@ import java.util.LinkedList;
 
 import static java.lang.Character.isWhitespace;
 
-public class preparation {
+public class Preparation {
 
-    public static LinkedList<String> prepareFile(String fileName){
+    private static LinkedList<String> prepareFile(String fileName){
         LinkedList<String> modFile = getFile(fileName);
         int i=0;
         while(modFile.get(i)!=modFile.getLast()){
@@ -27,6 +27,11 @@ public class preparation {
                     break;
             }
             i++;
+        }
+        int s=modFile.size()-1;
+        if(modFile.get(s-1).charAt(0)==modFile.get(s).charAt(0)) {
+            modFile.set(s - 1, modFile.get(s - 1) + " " + modFile.get(s).substring(1));
+            modFile.remove(s);
         }
         return modFile;
     }
@@ -74,7 +79,7 @@ public class preparation {
         int tmp=0;
         if(line.matches("(^DZIAŁ .*)")){
             tmp = patEnd(line,2);
-            modFile.add("D"+line.substring(0,tmp-1));
+            modFile.add("D"+line);
         }
         else if(line.matches("(^Rozdział .*)")){
             tmp = patEnd(line,2);
