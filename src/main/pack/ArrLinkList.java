@@ -22,5 +22,4 @@ public class ArrLinkList {
         return this.list.get(where);
     }
 
-
 }

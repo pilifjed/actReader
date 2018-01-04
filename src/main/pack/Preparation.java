@@ -5,13 +5,45 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import static java.lang.Character.isWhitespace;
 
+//Class that reads file and does a little bit of preprocessing
 public class Preparation {
 
-    private static LinkedList<String> prepareFile(String fileName){
-        LinkedList<String> modFile = getFile(fileName);
+    public LinkedList<String> file;
+
+    public Preparation(String fileName) throws FileNotFoundException, IOException{
+        this.file = getFile(fileName);
+        this.prepareFile();
+        this.rmTrash();
+    }
+
+    //Method that gets file
+    private LinkedList<String> getFile(String fileName) throws FileNotFoundException, IOException{
+        LinkedList<String> modFile = new LinkedList<>();
+        String line = null;
+        try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while((line = bufferedReader.readLine()) != null) {
+                classifyLine(line,modFile);
+            }
+            bufferedReader.close();
+            return modFile;
+        }
+        catch(FileNotFoundException ex) {
+            throw ex;
+        }
+        catch(IOException ex) {
+            System.out.println("An error occurred while reading file: \"" + fileName + "\"");
+            throw ex;
+        }
+    }
+    //Method that removes "-" at the ends of lines ands joins lines of "normal" text.
+    private void prepareFile(){
+        LinkedList<String> modFile = this.file;
         int i=0;
         while(modFile.get(i)!=modFile.getLast()){
             while(modFile.get(i+1)!=modFile.getLast()){
@@ -33,13 +65,12 @@ public class Preparation {
             modFile.set(s - 1, modFile.get(s - 1) + " " + modFile.get(s).substring(1));
             modFile.remove(s);
         }
-        return modFile;
+        this.file = modFile;
     }
 
-
-
-    public static LinkedList<String> rmTrash(String fileName){
-        LinkedList<String> modFile = prepareFile(fileName);
+    //method that removes thrash data
+    private void rmTrash(){
+        LinkedList<String> modFile = this.file;
         int i=0;
         while(modFile.get(i)!=modFile.getLast()){
             if(modFile.get(i).matches("(E©.*)|(E{1})")){
@@ -48,34 +79,10 @@ public class Preparation {
             else
                 i++;
         }
-        return modFile;
+        this.file = modFile;
     }
-
-    private static LinkedList<String> getFile(String fileName){
-        LinkedList<String> modFile = new LinkedList<>();
-        String line = null;
-        try {
-            FileReader fileReader = new FileReader(fileName);
-
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            while((line = bufferedReader.readLine()) != null) {
-                classifyLine(line,modFile);
-            }
-            bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
-            System.out.println("Wystapil problem z otwarciem pliku '" + fileName + "'");
-        }
-        catch(IOException ex) {
-            System.out.println("Wystapil problem podczas odczytu pliku '" + fileName + "'");
-        }
-        finally{
-            return modFile;
-        }
-    }
-
-    private static String classifyLine(String line, LinkedList<String> modFile){
+//method that classifies lines and works for both acts
+    private String classifyLine(String line, LinkedList<String> modFile){
         int tmp=0;
         if(line.matches("(^DZIAŁ .*)")){
             tmp = patEnd(line,2);
@@ -118,7 +125,8 @@ public class Preparation {
         return line;
     }
 
-    private static int patEnd(String line, int nb){
+    //Method that finds specific space in text
+    private int patEnd(String line, int nb){
         int i=0;
         while(nb>0){
             if(isWhitespace(line.charAt(i)))
@@ -129,4 +137,5 @@ public class Preparation {
         }
         return i-1;
     }
+
 }

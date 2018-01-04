@@ -19,21 +19,28 @@ public class Element {
         this.childList.add(child);
     }
 
+
+    //setters
     public void setContent(String content){
         this.content = content;
     }
 
+    public Element setParent(Element parent){
+        return this.parent = parent;
+    }
+
+
+    //getters
     public String getName(){
         return this.name;
     }
+
     public String getContent(){
         return this.content;
     }
+
     public Element getParent(){
         return this.parent;
-    }
-    public Element setParent(Element parent){
-        return this.parent = parent;
     }
 
     public char getElementType(){
@@ -47,28 +54,36 @@ public class Element {
     public LinkedList<Element> getChildList(){
         return this.childList;
     }
-    public Element getFirstChild(){
-        return childList.getFirst();
-    }
 
-    public Element getChild(String name){
-        for (Element child: this.childList) {
-            if(child.name==name)
-                return child;
-        }
-        return null;
-    }
-
-    public boolean equals(Element other){
-        return this.name.equals(other.name) && this.content.equals(other.content);
-    }
 
     public boolean hasChild(){
         return this.childList.size()>0;
     }
 
+
+    //Methods below are used for printing
+    public String contents(){
+        return contentsHelper(0);
+    }
+
     public String toString(){
         return toStringHelper(0);
+    }
+
+    private String contentsHelper(int i){
+        String toPrint="";
+        if(!this.getName().equals("")) {
+            toPrint += spaces(i) + this.getName() +"\n";
+            for (Element child : this.childList) {
+                toPrint += child.contentsHelper(i + 1);
+            }
+        }
+        else{
+            for (Element child : this.childList) {
+                toPrint += child.contentsHelper(i);
+            }
+        }
+        return toPrint;
     }
 
     private String toStringHelper(int i){
@@ -90,6 +105,7 @@ public class Element {
         return toPrint;
     }
 
+    //nice indentation
     private String spaces(int count){
         String out = "";
         while(count>0){
